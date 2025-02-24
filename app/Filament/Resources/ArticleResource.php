@@ -19,7 +19,16 @@ class ArticleResource extends Resource
 {
     protected static ?string $model = Article::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?string $modelLabel = 'Article';
+    protected static ?string $pluralModelLabel = 'Article';
+    protected static ?string $navigationGroup = 'News';
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status','pending')->count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -83,8 +92,12 @@ class ArticleResource extends Resource
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('views')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
+                Tables\Columns\SelectColumn::make('status')
+                ->options([
+                    'pending' => "Pending",
+                    'approved' => "Approved",
+                    'rejected' => "Rejected",
+                ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
