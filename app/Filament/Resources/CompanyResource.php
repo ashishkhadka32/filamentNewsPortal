@@ -6,6 +6,8 @@ use App\Filament\Resources\CompanyResource\Pages;
 use App\Filament\Resources\CompanyResource\RelationManagers;
 use App\Models\Company;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -31,29 +33,46 @@ class CompanyResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('facebook')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('youtube')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\FileUpload::make('logo')
-                    ->maxSize(1024)
-                    ->required(),
+                Section::make('Company Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TagsInput::make('phone')
+                            ->placeholder("Enter Contact Number")
+                            ->required(),
+
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('address')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('facebook')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('youtube')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\FileUpload::make('logo')
+                            ->maxSize(1024)
+                            ->required(),
+                    ])->columns(2),
+                Section::make([
+                    Repeater::make('company_contacts')
+                        ->columnSpanFull()
+                        ->grid(2)
+                        ->addActionLabel('Add New Contact')
+                        ->relationship('company_contacts')
+                        ->schema([
+                            Forms\Components\TextInput::make('number')
+                                ->tel()
+                                ->required()
+                                ->maxLength(255),
+                        ])
+                ])
+
             ]);
     }
 

@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCompany extends CreateRecord
 {
     protected static string $resource = CompanyResource::class;
+
+    public static function canCreateAnother(): bool
+    {
+        return false;
+    }
 }
